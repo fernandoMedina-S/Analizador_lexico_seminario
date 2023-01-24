@@ -8,6 +8,5 @@ fn main() {
     let cadena: String = String::from(argumento);
     let mut analizer: lexical::LexicalAnalysis = lexical::LexicalAnalysis::new(&cadena);
     analizer.analize();
-    println!("La cadena {} es de tipo: {}", cadena, analizer.get_type());
-    
+    analizer.get_results();
 }
