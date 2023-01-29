@@ -33,78 +33,110 @@ impl LexicalAnalysis {
         }
     }
 
+    pub fn compare(&self, idx: usize, lit: char) -> bool {
+        let input_cp = self.original.clone();
+        return input_cp.chars().nth(idx).unwrap() == lit;
+    }
+
+    pub fn check_for_types(&mut self, idx: usize) -> bool {
+        let input_cp = self.original.clone();
+        match input_cp.chars().nth(idx).unwrap() {
+            'i' => {
+                if self.compare(idx + 1, 'n')
+                    && self.compare(idx + 2, 't')
+                    && self.compare(idx + 3, ' ')
+                {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            _ => false,
+        }
+    }
+
     pub fn analize(&mut self) {
         let cad_copy = self.original.clone(); //Avoid multiple unmutable/mutable borrow errors on self
         for i in cad_copy.chars() {
             match self.state {
-                0 => { // Initial state
+                0 => {
+                    // Initial state
                     if i.is_alphabetic() {
                         self.state = 1;
                     } else if i.is_digit(10) {
                         self.state = 3;
-                    } else if i == ' ' || i == '\t'{
+                    } else if i == ' ' || i == '\t' {
                         self.state = 6;
                     } else {
                         self.state = u32::MAX;
                     }
                 }
-                1 => {  // a - Z identifier
+                1 => {
+                    // a - Z identifier
                     if i.is_alphabetic() {
                         self.state = 1;
                     } else if i.is_digit(10) {
                         self.state = 2;
-                    } else if i == ' ' || i == '\t'{
-                        self.separate_token(true);
-                        self.state = 6;
-                    }  else {
-                        self.separate_token(false);
-                    }
-                }
-                2 => {  //Numeric identifier
-                    if i.is_alphabetic() {
-                        self.state = 1;
-                    } else if i.is_digit(10) {
-                        self.state = 2;
-                    } else if i == ' ' || i == '\t'{
+                    } else if i == ' ' || i == '\t' {
                         self.separate_token(true);
                         self.state = 6;
                     } else {
                         self.separate_token(false);
                     }
                 }
-                3 => {  //Float number initial
+                2 => {
+                    //Numeric identifier
+                    if i.is_alphabetic() {
+                        self.state = 1;
+                    } else if i.is_digit(10) {
+                        self.state = 2;
+                    } else if i == ' ' || i == '\t' {
+                        self.separate_token(true);
+                        self.state = 6;
+                    } else {
+                        self.separate_token(false);
+                    }
+                }
+                3 => {
+                    //Float number initial
                     if i.is_digit(10) {
                         self.state = 3;
                     } else if i == '.' {
                         self.state = 4;
-                    } else {
-                        self.separate_token(false);
-                    }
-                }
-                4 => {  //Dot for Float number
-                    if i.is_digit(10) {
-                        self.state = 5;
-                    } else {
-                        self.separate_token(false);
-                    }
-                }
-                5 => {  //Additional digits for Float number
-                    if i.is_digit(10) {
-                        self.state = 5;
-                    } else if i == ' ' || i == '\t'{
+                    } else if i == ' ' || i == '\t' {
                         self.separate_token(true);
                         self.state = 6;
                     } else {
                         self.separate_token(false);
                     }
                 }
-                6 => { //Blank spaces
+                4 => {
+                    //Dot for Float number
+                    if i.is_digit(10) {
+                        self.state = 5;
+                    } else {
+                        self.separate_token(false);
+                    }
+                }
+                5 => {
+                    //Additional digits for Float number
+                    if i.is_digit(10) {
+                        self.state = 5;
+                    } else if i == ' ' || i == '\t' {
+                        self.separate_token(true);
+                        self.state = 6;
+                    } else {
+                        self.separate_token(false);
+                    }
+                }
+                6 => {
+                    //Blank spaces
                     self.bidx = self.idx;
                     if i.is_alphabetic() {
                         self.state = 1;
                     } else if i.is_digit(10) {
                         self.state = 3;
-                    } else if i == ' ' || i == '\t'{
+                    } else if i == ' ' || i == '\t' {
                         self.state = 6;
                     } else {
                         self.state = u32::MAX;
@@ -121,6 +153,7 @@ impl LexicalAnalysis {
         match state {
             0 => return String::from("Error"),
             1 | 2 => return String::from("Identificador"),
+            3 => return String::from("Entero"),
             5 => return String::from("Número Real"),
             6 => return String::from("Espacio en blanco"),
             u32::MAX => String::from("Error de sintaxis"),
@@ -128,11 +161,15 @@ impl LexicalAnalysis {
         }
     }
 
-    pub fn get_results(&self){
+    pub fn get_results(&self) {
         let mut i: usize = 0;
-        for elem in &self.states{
-            println!("El token {} es de tipo {}", self.tokens[i], self.get_type(*elem));
-            i=i+1;
+        for elem in &self.states {
+            println!(
+                "El token {} es de tipo {}",
+                self.tokens[i],
+                self.get_type(*elem)
+            );
+            i = i + 1;
         }
     }
 }
