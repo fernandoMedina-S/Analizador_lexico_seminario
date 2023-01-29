@@ -1,18 +1,38 @@
 # Seminario de traductores de lenguajes II
 
-## Analizador léxico - parte 1
-### (Identificadores y Números reales)
+## Analizador léxico
+### (completo)
 
-En este módulo se realiza un analizador léxico que pueda diferenciar identificadores y números reales.
+En este módulo se realiza un analizador léxico que diferencia estos símbolos:
+
+| token         | Valor |
+|---------------|-------|
+| identificador | 0     |
+| entero        | 1     |
+| real          | 2     |
+| cadena        | 3     |
+| tipo          | 4     |
+| opSuma        | 5     |
+| opMul         | 6     |
+| opRelac       | 7     |
+| opOr          | 8     |
+| opAnd         | 9     |
+| opNot         | 10    |
+| opIgualdad    | 11    |
+| ;             | 12    |
+| ,             | 13    |
+| (             | 14    |
+| )             | 15    |
+| {             | 16    |
+| }             | 17    |
+| =             | 18    |
+| if            | 19    |
+| while         | 20    |
+| return        | 21    |
+| else          | 22    |
+| $             | 23    |
 
 ### Pruebas
 
-* Con la cadena "Variable1"
-![Texto alternativo](/capturas/8.PNG)
-
-* Con la cadena "2.5Variable1"
-![Texto alternativo](/capturas/9.PNG)
-
-* Con la cadena "2.5Variable1 a b c 25.457"
-![Texto alternativo](/capturas/10.PNG)
-
+* Con la cadena "var int float < >= = || 3.5 10 ( } ; ,"
+![Texto alternativo](/capturas/11.PNG)
